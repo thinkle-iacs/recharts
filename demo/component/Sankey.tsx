@@ -143,9 +143,42 @@ const data1 = {
   ],
 };
 
+const nodes: { x: number; y: number; name: string, static: boolean }[] = [];
+
+for (let x = 20; x < 960; x += 200) {
+  for (let y = 20; y < 500; y += 200) {
+    nodes.push({ x, y, name: `${x},${y} (${nodes.length})`, static: true });
+  }
+}
+nodes.push({ name: 'wildcard'})
+nodes.push({ name: 'anywhere'})
+
+const data99 = {
+  nodes,
+  links : [
+    {source: 0, target: 12, value: 5},
+    {source: 1, target: 7, value: 5},
+    {source: 2, target: 8, value: 8},
+    {source: 8, target: 14, value: 4},
+    {source: 7, target: 13, value: 5},    
+    {source: 3, target: nodes.length - 1, value: 5},
+    {source: nodes.length - 1, target: 14, value: 5},
+    {source: nodes.length - 1, target: nodes.length -2, value: 8},
+    {source: nodes.length -2, target: 12, value: 3}
+  ]
+};
+
 function SankeyDemo() {
   return (
     <div className="sankey-charts">
+      <div>
+      <pre>0. Custom X Sankey</pre>
+      <Sankey width={960} height={500} data={data99}
+                node={<DemoSankeyNode containerWidth={960} />}
+>       
+        <Tooltip />
+      </Sankey>
+    </div>
       <div>
         <pre>1. Simple Sankey</pre>
         <Sankey width={960} height={500} data={data0}>

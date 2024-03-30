@@ -113,7 +113,9 @@ const getNodesTree = ({ nodes, links }: SankeyData, width: number, nodeWidth: nu
       if (!node.targetNodes.length) {
         node.depth = maxDepth;
       }
-      node.x = node.depth * childWidth;
+      if (!node.static) {
+        node.x = node.depth * childWidth;
+      }
       node.dx = nodeWidth;
     }
   }
@@ -145,8 +147,9 @@ const updateYOfTree = (depthTree: any, height: number, nodePadding: number, link
   for (let d = 0, maxDepth = depthTree.length; d < maxDepth; d++) {
     for (let i = 0, len = depthTree[d].length; i < len; i++) {
       const node = depthTree[d][i];
-
-      node.y = i;
+      if (!node.static) {
+        node.y = i;
+      }
       node.dy = node.value * yRatio;
     }
   }
@@ -170,7 +173,9 @@ const resolveCollisions = (depthTree: any[], height: number, nodePadding: number
       const dy = y0 - node.y;
 
       if (dy > 0) {
-        node.y += dy;
+        if (!node.static) {
+          node.y += dy;
+        }
       }
 
       y0 = node.y + node.dy + nodePadding;
@@ -182,7 +187,9 @@ const resolveCollisions = (depthTree: any[], height: number, nodePadding: number
       const dy = node.y + node.dy + nodePadding - y0;
 
       if (dy > 0) {
-        node.y -= dy;
+        if (!node.static) {
+          node.y -= dy;
+        }
         y0 = node.y;
       } else {
         break;
@@ -202,8 +209,9 @@ const relaxLeftToRight = (tree: any, depthTree: any, links: any, alpha: any) => 
         const sourceSum = getSumOfIds(links, node.sourceLinks);
         const weightedSum = getSumWithWeightedSource(tree, links, node.sourceLinks);
         const y = weightedSum / sourceSum;
-
-        node.y += (y - centerY(node)) * alpha;
+        if (!node.static) {
+          node.y += (y - centerY(node)) * alpha;
+        }
       }
     }
   }
@@ -219,8 +227,9 @@ const relaxRightToLeft = (tree: any, depthTree: any, links: any, alpha: any) => 
         const targetSum = getSumOfIds(links, node.targetLinks);
         const weightedSum = getSumWithWeightedTarget(tree, links, node.targetLinks);
         const y = weightedSum / targetSum;
-
-        node.y += (y - centerY(node)) * alpha;
+        if (!node.static) {
+          node.y += (y - centerY(node)) * alpha;
+        }
       }
     }
   }
